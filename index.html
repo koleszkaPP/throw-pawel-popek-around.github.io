@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Rzucane zdjęcie</title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+        background: white;
+        user-select: none;
+        position: relative;
+    }
+
+    #photo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 220px;
+        cursor: grab;
+        transform: translate(-50%, -50%);
+        transition: transform 0.05s linear;
+    }
+
+    button {
+        position: absolute;
+        top: 50%;
+        padding: 12px 22px;
+        background: #e0e0e0;
+        border: 2px solid black;
+        border-radius: 14px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    #spinBtn {
+        right: 40px;
+    }
+
+    #bgBtn {
+        left: 40px;
+    }
+</style>
+</head>
+
+<body>
+
+<img id="photo" src="photo.png" draggable="false">
+
+<button id="spinBtn">spin</button>
+<button id="bgBtn">backround</button>
+
+<script>
+    const photo = document.getElementById("photo");
+    const spinBtn = document.getElementById("spinBtn");
+    const bgBtn = document.getElementById("bgBtn");
+
+    // RZUCANIE ZDJĘCIA
+    let dragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    photo.addEventListener("mousedown", e => {
+        dragging = true;
+        photo.style.cursor = "grabbing";
+        offsetX = e.clientX - photo.offsetLeft;
+        offsetY = e.clientY - photo.offsetTop;
+    });
+
+    document.addEventListener("mouseup", () => {
+        dragging = false;
+        photo.style.cursor = "grab";
+    });
+
+    document.addEventListener("mousemove", e => {
+        if (!dragging) return;
+        photo.style.left = e.clientX - offsetX + "px";
+        photo.style.top = e.clientY - offsetY + "px";
+    });
+
+    // SPIN
+    let angle = 0;
+    let spinning = false;
+
+    spinBtn.addEventListener("click", () => {
+        if (spinning) return;
+        spinning = true;
+
+        let speed = 30;
+        let spins = 0;
+
+        const spinInterval = setInterval(() => {
+            angle += speed;
+            photo.style.transform = `rotate(${angle}deg)`;
+            spins++;
+
+            if (spins > 80) {
+                clearInterval(spinInterval);
+                spinning = false;
+            }
+        }, 10);
+    });
+
+    // ZMIANA TŁA
+    const colors = [
+        "red",
+        "orange",
+        "yellow",
+        "green",
+        "blue",
+        "purple",
+        "black",
+        "white"
+    ];
+
+    let colorIndex = 0;
+
+    bgBtn.addEventListener("click", () => {
+        document.body.style.background = colors[colorIndex];
+        colorIndex = (colorIndex + 1) % colors.length;
+    });
+</script>
+
+</body>
+</html>
