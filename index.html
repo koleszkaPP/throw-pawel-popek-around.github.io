@@ -70,8 +70,8 @@
 
 <button id="rollButton">Roll</button>
 <br>
-<img id="resultImage" src="" alt="Result">
-<div id="resultText"></div>
+<img id="resultImage" src="photo.png" alt="Result">
+<div id="resultText">Kliknij Roll</div>
 <div id="chanceText"></div>
 <div id="rarityText"></div>
 
@@ -79,10 +79,6 @@
 
 <audio id="backgroundMusic" loop autoplay>
   <source src="music.mp3" type="audio/mpeg">
-  <source src="music2.mp3" type="audio/mpeg">
-  <source src="music3.mp3" type="audio/mpeg">
-  <source src="music4.mp3" type="audio/mpeg">
-  <source src="music5.mp3" type="audio/mpeg">
   Twoja przeglądarka nie wspiera odtwarzania audio.
 </audio>
 
@@ -98,37 +94,26 @@ const images = [
   {src: 'photo8.png', text: 'paweł komunista', chance: 1/256, rarity: 'Ultra Legendary'}
 ];
 
-// Muzyka losowa
 const musicFiles = ['music.mp3', 'music2.mp3', 'music3.mp3', 'music4.mp3', 'music5.mp3'];
 const bgMusic = document.getElementById('backgroundMusic');
-
-// Funkcja losująca muzykę
-function playRandomMusic() {
-  const randomMusic = musicFiles[Math.floor(Math.random() * musicFiles.length)];
-  bgMusic.src = randomMusic;
-  bgMusic.play();
-}
 
 // Włącz/wyłącz dźwięk
 document.getElementById('muteButton').addEventListener('click', () => {
   bgMusic.muted = !bgMusic.muted;
 });
 
-// Funkcja RNG
+// Funkcja RNG z proporcjonalną szansą
 function rollRNG() {
-  const rand = Math.random(); // liczba 0-1
-  let cumulative = 0;
-  let selected = images[0];
+  // Tworzymy pulę do losowania
+  const pool = [];
+  images.forEach(img => {
+    const entries = Math.floor(img.chance * 256); // 1/2 -> 128
+    for (let i = 0; i < entries; i++) pool.push(img);
+  });
 
-  for (let img of images) {
-    cumulative += img.chance;
-    if (rand <= cumulative) {
-      selected = img;
-      break;
-    }
-  }
+  // Losowy wybór
+  const selected = pool[Math.floor(Math.random() * pool.length)];
 
-  // Wyświetl obrazek i tekst
   document.getElementById('resultImage').src = selected.src;
   document.getElementById('resultText').textContent = selected.text;
   document.getElementById('chanceText').textContent = `Szansa: 1/${1/selected.chance}`;
@@ -143,7 +128,13 @@ document.getElementById('rollButton').addEventListener('click', () => {
   rollRNG();
 });
 
-// Start losowej muzyki
+// Losowa muzyka na start
+function playRandomMusic() {
+  const randomMusic = musicFiles[Math.floor(Math.random() * musicFiles.length)];
+  bgMusic.src = randomMusic;
+  bgMusic.play();
+}
+
 playRandomMusic();
 </script>
 
