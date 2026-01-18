@@ -1,0 +1,1 @@
+sigmastyczny symulator dla sigiemek❤️
