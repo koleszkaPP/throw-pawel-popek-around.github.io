@@ -160,16 +160,25 @@ function rollRNG() {
 }
 
 // ---- PRZYCISK ROLL ----
+let rollCooldown = false;
+
+// Przycisk Roll
 document.getElementById('rollButton').addEventListener('click', () => {
-  if (!musicStarted) {
-    playRandomMusic();
-    musicStarted = true;
-  }
+  if (rollCooldown) return;
+
+  rollCooldown = true;
+
   const btn = document.getElementById('rollButton');
   btn.style.transform = 'scale(0.8)';
   setTimeout(() => btn.style.transform = 'scale(1)', 250);
+
   rollRNG();
+
+  setTimeout(() => {
+    rollCooldown = false;
+  }, 2000);
 });
+
 
 // ---- PRZYCISK MUTE ----
 document.getElementById('muteButton').addEventListener('click', () => {
